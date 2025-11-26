@@ -13,6 +13,10 @@ import { About } from './payload/globals/About';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
+if (!process.env.DATABASE_URI) {
+  throw new Error('DATABASE_URI environment variable is required');
+}
+
 export default buildConfig({
   admin: {
     user: 'users',
@@ -35,7 +39,7 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI || '',
+      connectionString: process.env.DATABASE_URI,
     },
   }),
   sharp,
