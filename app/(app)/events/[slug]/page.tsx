@@ -9,6 +9,28 @@ import { notFound } from 'next/navigation';
 
 export const revalidate = 3600; // Revalidate every hour as fallback
 
+// Generate static params for ISR - pre-generate all event pages at build time
+export async function generateStaticParams() {
+  const payload = await getPayloadClient();
+
+  const eventsData = await unstable_cache(
+    async () =>
+      payload.find({
+        collection: 'events',
+        limit: 1000, // Fetch all events for static generation
+        select: {
+          slug: true,
+        },
+      }),
+    ['all-event-slugs'],
+    { tags: ['events'], revalidate: 3600 }
+  )();
+
+  return eventsData.docs.map((event: { slug: string }) => ({
+    slug: event.slug,
+  }));
+}
+
 type Props = {
   params: Promise<{
     slug: string;

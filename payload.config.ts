@@ -3,6 +3,7 @@ import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import sharp from 'sharp';
 
 import { Events } from './payload/collections/Events';
 import { Media } from './payload/collections/Media';
@@ -37,5 +38,6 @@ export default buildConfig({
       connectionString: process.env.DATABASE_URI || '',
     },
   }),
+  sharp,
 });
 

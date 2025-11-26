@@ -1,5 +1,5 @@
 import { convertLexicalToHTMLAsync } from '@payloadcms/richtext-lexical/html-async';
-import type { SerializedEditorState } from 'lexical';
+import type { SerializedEditorState } from '@payloadcms/richtext-lexical/lexical';
 
 /**
  * Converts Payload CMS Lexical rich text to HTML string
