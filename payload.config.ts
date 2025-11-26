@@ -13,8 +13,29 @@ import { About } from './payload/globals/About';
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
 
-if (!process.env.DATABASE_URI) {
-  throw new Error('DATABASE_URI environment variable is required');
+// Support both DATABASE_URI and POSTGRES_URL (Supabase Vercel integration provides POSTGRES_URL)
+const databaseUriRaw = process.env.DATABASE_URI || process.env.POSTGRES_URL;
+if (!databaseUriRaw) {
+  throw new Error('DATABASE_URI or POSTGRES_URL environment variable is required');
+}
+
+// Ensure Supabase connections use SSL properly
+// Even with Supabase Vercel integration, connection strings use sslmode=require
+// which fails in Vercel's build environment due to certificate trust issues
+// Solution: use sslmode=no-verify (still uses SSL encryption, just skips cert validation)
+let databaseUri = databaseUriRaw;
+const isSupabaseConnection = databaseUri.includes('supabase.com');
+if (isSupabaseConnection) {
+  // Replace sslmode=require with sslmode=no-verify for Supabase
+  // This still uses SSL but doesn't validate the certificate chain
+  // which is necessary for Supabase in build environments like Vercel
+  if (databaseUri.includes('sslmode=require')) {
+    databaseUri = databaseUri.replace('sslmode=require', 'sslmode=no-verify');
+  } else if (!databaseUri.includes('sslmode=')) {
+    // Add sslmode=no-verify if not present
+    const separator = databaseUri.includes('?') ? '&' : '?';
+    databaseUri = `${databaseUri}${separator}sslmode=no-verify`;
+  }
 }
 
 export default buildConfig({
@@ -39,8 +60,11 @@ export default buildConfig({
   },
   db: postgresAdapter({
     pool: {
-      connectionString: process.env.DATABASE_URI,
+      connectionString: databaseUri,
     },
+    // Use migrations instead of push for production
+    // Migrations should be run before build: pnpm payload migrate
+    push: false,
   }),
   sharp,
 });
