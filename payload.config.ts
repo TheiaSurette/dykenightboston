@@ -9,6 +9,7 @@ import { Events } from './payload/collections/Events';
 import { Media } from './payload/collections/Media';
 import { Users } from './payload/collections/Users';
 import { About } from './payload/globals/About';
+import { migrations } from './migrations';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -63,8 +64,12 @@ export default buildConfig({
       connectionString: databaseUri,
     },
     // Use migrations instead of push for production
-    // Migrations should be run before build: pnpm payload migrate
     push: false,
+    // Specify migration directory for CLI commands (payload migrate)
+    migrationDir: path.resolve(dirname, 'migrations'),
+    // Import migrations directly for runtime (Vercel/serverless compatibility)
+    // Migrations will run automatically when Payload initializes
+    prodMigrations: migrations,
   }),
   sharp,
 });
