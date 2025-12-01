@@ -1,38 +1,11 @@
 'use client';
 
-import { useState } from 'react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useNewsletterSubscription } from '@/hooks/useNewsletterSubscription';
 
 export default function NewsletterSignup() {
-  const [email, setEmail] = useState('');
-  const [status, setStatus] = useState<'idle' | 'loading' | 'success' | 'error'>('idle');
-  const [message, setMessage] = useState('');
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setStatus('loading');
-    setMessage('');
-
-    // TODO: Replace with actual newsletter API endpoint
-    try {
-      // Simulate API call - replace with actual implementation
-      await new Promise((resolve) => setTimeout(resolve, 1000));
-
-      setStatus('success');
-      setMessage('Thanks for signing up!');
-      setEmail('');
-
-      // Reset success message after 3 seconds
-      setTimeout(() => {
-        setStatus('idle');
-        setMessage('');
-      }, 3000);
-    } catch (error) {
-      setStatus('error');
-      setMessage('Something went wrong. Please try again.');
-    }
-  };
+  const { email, setEmail, status, message, isLoading, handleSubmit } = useNewsletterSubscription();
 
   return (
     <section className="px-6 pl-16 pr-16 md:pl-28 md:pr-28 py-4 text-white">
@@ -51,17 +24,17 @@ export default function NewsletterSignup() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              disabled={status === 'loading'}
+              disabled={isLoading}
               className="bg-white/10 border-white/20 text-white placeholder:text-white/60 focus-visible:ring-white/30 backdrop-blur-sm max-w-xs sm:max-w-none"
             />
           </div>
           <Button
             variant="outline"
             type="submit"
-            disabled={status === 'loading' || status === 'success'}
+            disabled={isLoading || status === 'success'}
             className="w-full sm:w-auto bg-transparent border-white/30 text-white"
           >
-            {status === 'loading'
+            {isLoading
               ? 'Signing up...'
               : status === 'success'
               ? 'Signed up!'
