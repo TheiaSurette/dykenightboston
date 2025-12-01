@@ -97,17 +97,17 @@ export default buildConfig({
   }),
   plugins: [
     // Configure Supabase Storage via S3-compatible API
-    // Always load the plugin to ensure UploadHandlersProvider is available
-    // If storage isn't configured, uploads will fail at runtime with a clear error
+    // Always load the plugin with media collection enabled to ensure UploadHandlersProvider is available
+    // If storage isn't configured, uploads will fail at runtime but admin panel will still work
     s3Storage({
       collections: {
-        media: {
+        media: hasStorageConfig ? {
           // Use signed URLs for private bucket access
           // Set to false if bucket is public and you want direct access
-          signedDownloads: hasStorageConfig && process.env.SUPABASE_STORAGE_USE_SIGNED_URLS === 'true' ? {
+          signedDownloads: process.env.SUPABASE_STORAGE_USE_SIGNED_URLS === 'true' ? {
             shouldUseSignedURL: () => true, // Generate signed URLs for all files
           } : undefined,
-        },
+        } : true, // Enable collection even without storage config to ensure provider is available
       },
       bucket: hasStorageConfig ? process.env.SUPABASE_STORAGE_BUCKET! : 'placeholder',
       config: {
