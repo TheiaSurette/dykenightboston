@@ -64,24 +64,25 @@ export default async function EventDetailsPage({ params }: Props) {
   }
 
   // Serialize rich text description
-  const descriptionHtml = event.description
-    ? await serializeRichText(event.description)
-    : '';
+  const descriptionHtml = event.description ? await serializeRichText(event.description) : '';
 
   // Format date consistently for server and client (avoid hydration mismatch)
   // Use UTC to ensure consistent formatting regardless of server/client timezone
   const eventDate = new Date(event.date);
-  const formattedDate = eventDate.toLocaleDateString('en-US', {
-    weekday: 'long',
-    month: 'long',
-    day: 'numeric',
-    year: 'numeric',
-    timeZone: 'UTC', // Use UTC to ensure consistency
-  }) + ' at ' + eventDate.toLocaleTimeString('en-US', {
-    hour: 'numeric',
-    minute: '2-digit',
-    timeZone: 'UTC', // Use UTC to ensure consistency
-  });
+  const formattedDate =
+    eventDate.toLocaleDateString('en-US', {
+      weekday: 'long',
+      month: 'long',
+      day: 'numeric',
+      year: 'numeric',
+      timeZone: 'UTC', // Use UTC to ensure consistency
+    }) +
+    ' at ' +
+    eventDate.toLocaleTimeString('en-US', {
+      hour: 'numeric',
+      minute: '2-digit',
+      timeZone: 'UTC', // Use UTC to ensure consistency
+    });
 
   // Build location text
   const locationParts = [];
@@ -98,8 +99,7 @@ export default async function EventDetailsPage({ params }: Props) {
       locationParts.push(event.location.city);
     }
   }
-  const locationText =
-    locationParts.length > 0 ? locationParts.join(' | ') : 'Location TBD';
+  const locationText = locationParts.length > 0 ? locationParts.join(' | ') : 'Location TBD';
 
   // Helper function to get icon component from lucide-react
   const getIcon = (iconName?: string) => {
@@ -130,7 +130,7 @@ export default async function EventDetailsPage({ params }: Props) {
                 src={event.image.url}
                 alt={event.image.alt || event.title}
                 fill
-                className="object-cover"
+                className="object-contain"
                 priority
               />
             </div>
@@ -194,4 +194,3 @@ export default async function EventDetailsPage({ params }: Props) {
     </main>
   );
 }
-
