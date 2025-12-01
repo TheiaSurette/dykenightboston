@@ -63,12 +63,13 @@ export default buildConfig({
     pool: {
       connectionString: databaseUri,
     },
-    // Use migrations instead of push for production
-    push: false,
-    // Specify migration directory for CLI commands (payload migrate)
+    // During build, use push to create schema if it doesn't exist
+    // This ensures tables exist before generateStaticParams runs
+    // In production runtime, migrations handle schema changes
+    push: process.env.VERCEL === '1' || process.env.NODE_ENV === 'production',
+    // Specify migration directory for CLI commands
     migrationDir: path.resolve(dirname, 'migrations'),
-    // Import migrations directly for runtime (Vercel/serverless compatibility)
-    // Migrations will run automatically when Payload initializes
+    // Import migrations for runtime (after initial schema is created)
     prodMigrations: migrations,
   }),
   sharp,
