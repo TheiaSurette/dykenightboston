@@ -66,13 +66,13 @@ export default function EventCard({
   const locationText = locationParts.length > 0 ? locationParts.join(' | ') : 'Location TBD';
 
   return (
-    <Card className="overflow-hidden border-red/20 py-0 pb-6 bg-black/80 backdrop-blur-sm rounded">
+    <Card className="overflow-hidden border-red/20 py-0 pb-6 bg-black/80 backdrop-blur-sm rounded w-full">
       {image && (
-        <div className="relative h-48 w-full overflow-hidden">
+        <div className="relative h-48 w-full overflow-hidden rounded-t">
           <Image src={image.url} alt={image.alt} fill className="object-cover" />
         </div>
       )}
-      <CardContent className="px-6">
+      <CardContent className="px-6 overflow-hidden">
         <Link href={`/events/${slug}`}>
           <h3 className="text-2xl font-bold mb-4 text-white hover:text-red transition-colors cursor-pointer">
             {title}
@@ -94,7 +94,7 @@ export default function EventCard({
           )}
         </div>
       </CardContent>
-      <CardFooter className="px-6 pt-0 flex flex-col md:flex-row items-center gap-3 w-full">
+      <CardFooter className="px-6 pt-0 flex flex-col md:flex-row items-center gap-3 w-full overflow-hidden">
         {eventLinks && eventLinks.length > 0 ? (
           <>
             <Button
