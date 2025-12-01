@@ -105,6 +105,9 @@ importers:
       eslint-config-next:
         specifier: 16.0.0
         version: 16.0.0(@typescript-eslint/parser@8.47.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3))(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.3)
+      pg:
+        specifier: ^8.16.3
+        version: 8.16.3
       supabase:
         specifier: ^2.53.6
         version: 2.58.5
