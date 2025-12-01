@@ -21,7 +21,9 @@ if (!databaseUriRaw) {
   throw new Error('DATABASE_URI or POSTGRES_URL environment variable is required');
 }
 
-// Check if Supabase Storage is configured (required in production)
+// Check if Supabase Storage is configured
+// Note: Storage is required for media uploads in production, but we don't fail here
+// to allow the admin panel to load. Uploads will fail gracefully if storage isn't configured.
 const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
 const hasStorageConfig =
   process.env.SUPABASE_STORAGE_BUCKET &&
@@ -30,8 +32,9 @@ const hasStorageConfig =
   process.env.SUPABASE_STORAGE_ENDPOINT;
 
 if (isProduction && !hasStorageConfig) {
-  throw new Error(
-    'Supabase Storage configuration is required in production. Please set the following environment variables:\n' +
+  console.warn(
+    '⚠️  Supabase Storage is not configured. Media uploads will fail in production.\n' +
+      'Please set the following environment variables:\n' +
       '- SUPABASE_STORAGE_BUCKET\n' +
       '- SUPABASE_STORAGE_ACCESS_KEY_ID\n' +
       '- SUPABASE_STORAGE_SECRET_ACCESS_KEY\n' +

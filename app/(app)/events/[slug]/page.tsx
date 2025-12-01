@@ -68,14 +68,19 @@ export default async function EventDetailsPage({ params }: Props) {
     ? await serializeRichText(event.description)
     : '';
 
-  // Format date
-  const formattedDate = new Date(event.date).toLocaleDateString('en-US', {
+  // Format date consistently for server and client (avoid hydration mismatch)
+  // Use UTC to ensure consistent formatting regardless of server/client timezone
+  const eventDate = new Date(event.date);
+  const formattedDate = eventDate.toLocaleDateString('en-US', {
     weekday: 'long',
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'UTC', // Use UTC to ensure consistency
+  }) + ' at ' + eventDate.toLocaleTimeString('en-US', {
     hour: 'numeric',
     minute: '2-digit',
+    timeZone: 'UTC', // Use UTC to ensure consistency
   });
 
   // Build location text
