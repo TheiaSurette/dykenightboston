@@ -7,10 +7,11 @@ import { fileURLToPath } from 'url';
 import sharp from 'sharp';
 
 import { Events } from './payload/collections/Events';
-import { Media } from './payload/collections/Media';
+import { Media as MediaCollection } from './payload/collections/Media';
 import { Users } from './payload/collections/Users';
 import { About } from './payload/globals/About';
 import { migrations } from './migrations';
+import type { CollectionConfig } from 'payload';
 
 const filename = fileURLToPath(import.meta.url);
 const dirname = path.dirname(filename);
@@ -71,7 +72,15 @@ export default buildConfig({
   },
   collections: [
     Events,
-    Media,
+    // Conditionally configure Media collection based on storage availability
+    // If storage isn't configured, remove upload config to prevent UploadHandlersProvider error
+    ...(hasStorageConfig 
+      ? [MediaCollection]
+      : [{
+          ...MediaCollection,
+          upload: undefined, // Remove upload config when storage isn't available
+        } as CollectionConfig]
+    ),
     Users,
   ],
   globals: [
@@ -97,29 +106,30 @@ export default buildConfig({
   }),
   plugins: [
     // Configure Supabase Storage via S3-compatible API
-    // Always load the plugin with media collection enabled to ensure UploadHandlersProvider is available
-    // If storage isn't configured, uploads will fail at runtime but admin panel will still work
-    s3Storage({
-      collections: {
-        media: hasStorageConfig ? {
-          // Use signed URLs for private bucket access
-          // Set to false if bucket is public and you want direct access
-          signedDownloads: process.env.SUPABASE_STORAGE_USE_SIGNED_URLS === 'true' ? {
-            shouldUseSignedURL: () => true, // Generate signed URLs for all files
-          } : undefined,
-        } : true, // Enable collection even without storage config to ensure provider is available
-      },
-      bucket: hasStorageConfig ? process.env.SUPABASE_STORAGE_BUCKET! : 'placeholder',
-      config: {
-        credentials: {
-          accessKeyId: hasStorageConfig ? process.env.SUPABASE_STORAGE_ACCESS_KEY_ID! : 'placeholder',
-          secretAccessKey: hasStorageConfig ? process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY! : 'placeholder',
+    // Only load plugin when storage is properly configured
+    ...(hasStorageConfig ? [
+      s3Storage({
+        collections: {
+          media: {
+            // Use signed URLs for private bucket access
+            // Set to false if bucket is public and you want direct access
+            signedDownloads: process.env.SUPABASE_STORAGE_USE_SIGNED_URLS === 'true' ? {
+              shouldUseSignedURL: () => true, // Generate signed URLs for all files
+            } : undefined,
+          },
         },
-        region: process.env.SUPABASE_STORAGE_REGION || 'us-east-1',
-        endpoint: hasStorageConfig ? process.env.SUPABASE_STORAGE_ENDPOINT! : 'https://placeholder.supabase.co/storage/v1/s3',
-        forcePathStyle: true, // Required for Supabase Storage S3 compatibility
-      },
-    }),
+        bucket: process.env.SUPABASE_STORAGE_BUCKET!,
+        config: {
+          credentials: {
+            accessKeyId: process.env.SUPABASE_STORAGE_ACCESS_KEY_ID!,
+            secretAccessKey: process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY!,
+          },
+          region: process.env.SUPABASE_STORAGE_REGION || 'us-east-1',
+          endpoint: process.env.SUPABASE_STORAGE_ENDPOINT!,
+          forcePathStyle: true, // Required for Supabase Storage S3 compatibility
+        },
+      }),
+    ] : []),
   ],
   sharp,
 });
