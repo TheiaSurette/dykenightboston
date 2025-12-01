@@ -1,6 +1,7 @@
 import { buildConfig } from 'payload';
 import { postgresAdapter } from '@payloadcms/db-postgres';
 import { lexicalEditor } from '@payloadcms/richtext-lexical';
+import { s3Storage } from '@payloadcms/storage-s3';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import sharp from 'sharp';
@@ -18,6 +19,25 @@ const dirname = path.dirname(filename);
 const databaseUriRaw = process.env.DATABASE_URI || process.env.POSTGRES_URL;
 if (!databaseUriRaw) {
   throw new Error('DATABASE_URI or POSTGRES_URL environment variable is required');
+}
+
+// Check if Supabase Storage is configured (required in production)
+const isProduction = process.env.VERCEL === '1' || process.env.NODE_ENV === 'production';
+const hasStorageConfig =
+  process.env.SUPABASE_STORAGE_BUCKET &&
+  process.env.SUPABASE_STORAGE_ACCESS_KEY_ID &&
+  process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY &&
+  process.env.SUPABASE_STORAGE_ENDPOINT;
+
+if (isProduction && !hasStorageConfig) {
+  throw new Error(
+    'Supabase Storage configuration is required in production. Please set the following environment variables:\n' +
+      '- SUPABASE_STORAGE_BUCKET\n' +
+      '- SUPABASE_STORAGE_ACCESS_KEY_ID\n' +
+      '- SUPABASE_STORAGE_SECRET_ACCESS_KEY\n' +
+      '- SUPABASE_STORAGE_ENDPOINT\n' +
+      'See env.example for setup instructions.'
+  );
 }
 
 // Ensure Supabase connections use SSL properly
@@ -72,6 +92,35 @@ export default buildConfig({
     // Import migrations for runtime (after initial schema is created)
     prodMigrations: migrations,
   }),
+  plugins: [
+    // Configure Supabase Storage via S3-compatible API
+    // Required in production, optional in development
+    ...(hasStorageConfig
+      ? [
+          s3Storage({
+            collections: {
+              media: {
+                // Use signed URLs for private bucket access
+                // Set to false if bucket is public and you want direct access
+                signedDownloads: process.env.SUPABASE_STORAGE_USE_SIGNED_URLS === 'true' ? {
+                  shouldUseSignedURL: () => true, // Generate signed URLs for all files
+                } : undefined,
+              },
+            },
+            bucket: process.env.SUPABASE_STORAGE_BUCKET!,
+            config: {
+              credentials: {
+                accessKeyId: process.env.SUPABASE_STORAGE_ACCESS_KEY_ID!,
+                secretAccessKey: process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY!,
+              },
+              region: process.env.SUPABASE_STORAGE_REGION || 'us-east-1',
+              endpoint: process.env.SUPABASE_STORAGE_ENDPOINT!,
+              forcePathStyle: true, // Required for Supabase Storage S3 compatibility
+            },
+          }),
+        ]
+      : []),
+  ],
   sharp,
 });
 
