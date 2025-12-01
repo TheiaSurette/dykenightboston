@@ -12,7 +12,7 @@ export default async function EventsPage() {
     async () =>
       payload.find({
         collection: 'events',
-        sort: 'date',
+        sort: '-date',
         limit: 100,
       }),
     ['events-page-data'],
@@ -20,8 +20,12 @@ export default async function EventsPage() {
   )();
 
   const now = new Date();
-  const upcomingEvents = eventsData.docs.filter((event: any) => new Date(event.date) >= now);
-  const pastEvents = eventsData.docs.filter((event: any) => new Date(event.date) < now);
+  const upcomingEvents = eventsData.docs
+    .filter((event: any) => new Date(event.date) >= now)
+    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+  const pastEvents = eventsData.docs
+    .filter((event: any) => new Date(event.date) < now)
+    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <main className="min-h-screen bg-transparent pt-16">

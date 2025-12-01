@@ -21,7 +21,7 @@ export default async function Home() {
           date: { greater_than_equal: new Date().toISOString() },
         },
         limit: 6,
-        sort: 'date',
+        sort: '-date',
         depth: 1,
       }),
     ['homepage-events-data'],
