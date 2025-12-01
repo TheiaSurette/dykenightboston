@@ -32,6 +32,18 @@ const hasStorageConfig =
   process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY &&
   process.env.SUPABASE_STORAGE_ENDPOINT;
 
+// Debug logging to help diagnose storage configuration issues
+if (isProduction) {
+  const storageVars = {
+    SUPABASE_STORAGE_BUCKET: process.env.SUPABASE_STORAGE_BUCKET ? '✓ Set' : '✗ Missing',
+    SUPABASE_STORAGE_ACCESS_KEY_ID: process.env.SUPABASE_STORAGE_ACCESS_KEY_ID ? '✓ Set' : '✗ Missing',
+    SUPABASE_STORAGE_SECRET_ACCESS_KEY: process.env.SUPABASE_STORAGE_SECRET_ACCESS_KEY ? '✓ Set' : '✗ Missing',
+    SUPABASE_STORAGE_ENDPOINT: process.env.SUPABASE_STORAGE_ENDPOINT ? '✓ Set' : '✗ Missing',
+  };
+  console.log('Storage Configuration Check:', storageVars);
+  console.log('Storage configured:', hasStorageConfig);
+}
+
 if (isProduction && !hasStorageConfig) {
   console.warn(
     '⚠️  Supabase Storage is not configured. Media uploads will fail in production.\n' +
