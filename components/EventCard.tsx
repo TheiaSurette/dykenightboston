@@ -43,12 +43,17 @@ export default function EventCard({
     const IconComponent = (LucideIcons as any)[iconName];
     return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
   };
-  // Format date in Eastern Time for Boston events
+  // Format date and time in Eastern Time for Boston events
   const eventDate = new Date(date);
   const formattedDate = eventDate.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'America/New_York', // Use Eastern Time for Boston events
+  });
+  const formattedTime = eventDate.toLocaleTimeString('en-US', {
+    hour: 'numeric',
+    minute: '2-digit',
     timeZone: 'America/New_York', // Use Eastern Time for Boston events
   });
 
@@ -84,7 +89,7 @@ export default function EventCard({
         <div className="space-y-2">
           <div className="flex items-center text-white/70">
             <Calendar className="w-5 h-5 mr-2" />
-            {formattedDate}
+            <span>{formattedDate} • {formattedTime}</span>
           </div>
           <div className="flex items-center text-white/70">
             <MapPin className="w-5 h-5 mr-2" />
