@@ -67,7 +67,7 @@ export default async function EventDetailsPage({ params }: Props) {
   const descriptionHtml = event.description ? await serializeRichText(event.description) : '';
 
   // Format date consistently for server and client (avoid hydration mismatch)
-  // Use UTC to ensure consistent formatting regardless of server/client timezone
+  // Use America/New_York timezone for Boston events
   const eventDate = new Date(event.date);
   const formattedDate =
     eventDate.toLocaleDateString('en-US', {
@@ -75,13 +75,13 @@ export default async function EventDetailsPage({ params }: Props) {
       month: 'long',
       day: 'numeric',
       year: 'numeric',
-      timeZone: 'UTC', // Use UTC to ensure consistency
+      timeZone: 'America/New_York', // Use Eastern Time for Boston events
     }) +
     ' at ' +
     eventDate.toLocaleTimeString('en-US', {
       hour: 'numeric',
       minute: '2-digit',
-      timeZone: 'UTC', // Use UTC to ensure consistency
+      timeZone: 'America/New_York', // Use Eastern Time for Boston events
     });
 
   // Build location text

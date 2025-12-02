@@ -43,10 +43,13 @@ export default function EventCard({
     const IconComponent = (LucideIcons as any)[iconName];
     return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
   };
-  const formattedDate = new Date(date).toLocaleDateString('en-US', {
+  // Format date in Eastern Time for Boston events
+  const eventDate = new Date(date);
+  const formattedDate = eventDate.toLocaleDateString('en-US', {
     month: 'long',
     day: 'numeric',
     year: 'numeric',
+    timeZone: 'America/New_York', // Use Eastern Time for Boston events
   });
 
   const locationParts = [];
