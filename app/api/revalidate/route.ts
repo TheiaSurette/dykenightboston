@@ -18,7 +18,7 @@ export async function POST(request: Request) {
 
     // Revalidate each tag
     for (const tag of tags) {
-      revalidateTag(tag, {});
+      revalidateTag(tag);
     }
 
     return NextResponse.json(
