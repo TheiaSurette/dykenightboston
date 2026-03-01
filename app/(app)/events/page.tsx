@@ -12,6 +12,11 @@ export default async function EventsPage() {
     async () =>
       payload.find({
         collection: 'events',
+        where: {
+          status: {
+            equals: 'published',
+          },
+        },
         sort: '-date',
         limit: 100,
       }),

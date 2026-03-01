@@ -17,6 +17,11 @@ export async function generateStaticParams() {
     async () =>
       payload.find({
         collection: 'events',
+        where: {
+          status: {
+            equals: 'published',
+          },
+        },
         limit: 1000, // Fetch all events for static generation
         select: {
           slug: true,
@@ -48,6 +53,9 @@ export default async function EventDetailsPage({ params }: Props) {
         where: {
           slug: {
             equals: slug,
+          },
+          status: {
+            equals: 'published',
           },
         },
         limit: 1,

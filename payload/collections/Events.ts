@@ -6,7 +6,7 @@ export const Events: CollectionConfig = {
   admin: {
     group: 'Content',
     useAsTitle: 'title',
-    defaultColumns: ['title', 'date'],
+    defaultColumns: ['title', 'date', 'status'],
   },
   hooks: {
     afterChange: [
@@ -43,6 +43,19 @@ export const Events: CollectionConfig = {
             return value;
           },
         ],
+      },
+    },
+    {
+      name: 'status',
+      type: 'select',
+      defaultValue: 'draft',
+      options: [
+        { label: 'Draft', value: 'draft' },
+        { label: 'Published', value: 'published' },
+      ],
+      admin: {
+        position: 'sidebar',
+        description: 'Only published events appear on the site',
       },
     },
     {
