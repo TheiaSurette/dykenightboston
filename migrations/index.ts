@@ -4,6 +4,8 @@ import * as migration_20251201_200108 from './20251201_200108';
 import * as migration_20251201_201632 from './20251201_201632';
 import * as migration_20260301_add_events_status from './20260301_add_events_status';
 
+import * as migration_20261020_add_phone_announcement from './20261020_add_phone_announcement';
+
 export const migrations = [
   {
     up: migration_20251126_173634_initial_schema.up,
@@ -29,5 +31,10 @@ export const migrations = [
     up: migration_20260301_add_events_status.up,
     down: migration_20260301_add_events_status.down,
     name: '20260301_add_events_status',
+  },
+  {
+    up: migration_20261020_add_phone_announcement.up,
+    down: migration_20261020_add_phone_announcement.down,
+    name: '20261020_add_phone_announcement',
   },
 ];
