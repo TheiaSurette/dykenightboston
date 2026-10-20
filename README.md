@@ -127,3 +127,9 @@ The site uses ISR for optimal performance:
 
 All rights reserved.
 
+
+## Phone announcement
+
+The Twilio incoming-call webhook reads a shared announcement managed by admins
+and editors in Payload. See [Phone announcement setup and verification](docs/phone-announcement.md)
+for environment settings, migration, automated checks, and later number hookup.

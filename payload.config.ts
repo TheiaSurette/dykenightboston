@@ -11,6 +11,7 @@ import { Media as MediaCollection } from './payload/collections/Media';
 import { Users } from './payload/collections/Users';
 import { About } from './payload/globals/About';
 import { SocialLinks } from './payload/globals/SocialLinks';
+import { PhoneAnnouncement } from './payload/globals/PhoneAnnouncement';
 import { migrations } from './migrations';
 import type { CollectionConfig } from 'payload';
 
@@ -95,6 +96,7 @@ export default buildConfig({
   globals: [
     About,
     SocialLinks,
+    PhoneAnnouncement,
   ],
   editor: lexicalEditor({}),
   secret: process.env.PAYLOAD_SECRET || '',
