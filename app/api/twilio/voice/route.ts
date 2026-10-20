@@ -1,4 +1,5 @@
 import twilio from 'twilio';
+import { hasValidAnnouncementCharacters } from '@/lib/phoneAnnouncement';
 
 export const runtime = 'nodejs';
 
@@ -43,7 +44,8 @@ export async function POST(request: Request) {
     const { getPayloadClient } = await import('@/lib/payload');
     const payload = await getPayloadClient();
     const announcement = await payload.findGlobal({ slug: 'phone-announcement', overrideAccess: true });
-    if (typeof announcement.message === 'string' && announcement.message.trim()) {
+    if (typeof announcement.message === 'string' && announcement.message.trim()
+      && hasValidAnnouncementCharacters(announcement.message)) {
       message = announcement.message;
     }
   } catch {

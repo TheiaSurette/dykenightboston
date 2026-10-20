@@ -1,4 +1,5 @@
 import type { GlobalConfig } from 'payload';
+import { hasValidAnnouncementCharacters } from '@/lib/phoneAnnouncement';
 
 export const PhoneAnnouncement: GlobalConfig = {
   slug: 'phone-announcement',
@@ -20,6 +21,7 @@ export const PhoneAnnouncement: GlobalConfig = {
       },
       validate: (value) => {
         if (typeof value !== 'string' || !value.trim()) return 'Enter an announcement containing text.';
+        if (!hasValidAnnouncementCharacters(value)) return 'This announcement contains characters that cannot be read aloud. Remove them and try again.';
         if (value.length > 1500) return 'Keep the announcement to 1,500 characters or fewer.';
         return true;
       },

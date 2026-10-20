@@ -216,6 +216,43 @@ test('markup and special characters remain plain spoken text and earlier respons
   await assertSpoken(await voice(), 'The latest announcement.');
 });
 
+
+test('Unicode text, emoji, line breaks, and tabs remain valid spoken text', async () => {
+  const message = 'Olá Boston 🏳️‍🌈! Doors at 8.\nTickets:\t$20.';
+  const response = await api('/api/globals/phone-announcement', { method: 'POST', token: editorToken, data: { message } });
+  assert.equal(response.status, 200, await response.clone().text());
+  await assertSpoken(await voice(), message);
+  const restored = await api('/api/globals/phone-announcement', { method: 'POST', token: adminToken, data: { message: 'The latest announcement.' } });
+  assert.equal(restored.status, 200);
+});
+
+
+test('characters that cannot be spoken through XML cannot replace a valid announcement', async () => {
+  for (const message of ['hello\u0001world', 'hello\uffffworld', 'hello\ud800world']) {
+    const response = await api('/api/globals/phone-announcement', { method: 'POST', token: editorToken, data: { message } });
+    assert.equal(response.status, 400, await response.clone().text());
+    assert.match(await response.text(), /characters.*cannot.*read aloud/i);
+  }
+  await assertSpoken(await voice(), 'The latest announcement.');
+});
+
+
+test('unreadable legacy content uses the fallback instead of breaking the call', async () => {
+  const pool = new pgClient.Pool({ connectionString: `postgresql://${process.env.USER}@127.0.0.1:${pgPort}/postgres` });
+  try {
+    // Fixture for old/imported content that predates CMS validation. Assertions
+    // remain at the signed HTTP webhook boundary.
+    for (const message of ['hello\u0001world', 'hello\uffffworld']) {
+      await pool.query('UPDATE phone_announcement SET message = $1', [message]);
+      await assertSpoken(await voice(), fallback);
+    }
+  } finally {
+    await pool.end();
+    const restored = await api('/api/globals/phone-announcement', { method: 'POST', token: adminToken, data: { message: 'The latest announcement.' } });
+    assert.equal(restored.status, 200);
+  }
+});
+
 for (const [name, options] of [
   ['an invalid signature', { signature: 'invalid' }],
   ['a signature for another public URL', { signingUrl: 'https://wrong.example.test/api/twilio/voice?source=phone' }],
