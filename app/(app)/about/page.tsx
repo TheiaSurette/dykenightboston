@@ -59,7 +59,7 @@ export default async function AboutPage() {
                   House <span className="text-red">Rules</span>
                 </h1>
                 <ol className="list-decimal list-inside text-lg mb-2 text-white/90 [text-shadow:2px_2px_4px_rgb(0_0_0/60%)]">
-                  {houseRulesSection.rules.map((rule: any, index: number) => (
+                  {houseRulesSection.rules.map((rule, index: number) => (
                     <li
                       key={index}
                       className="text-lg text-white/90 mb-6 [text-shadow:2px_2px_4px_rgb(0_0_0/60%)]"

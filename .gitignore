@@ -43,7 +43,6 @@ next-env.d.ts
 
 # payload
 /media
-payload-types.ts
 
 # supabase
 supabase/.branches

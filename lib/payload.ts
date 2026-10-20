@@ -1,7 +1,7 @@
-import { getPayload } from 'payload';
+import { getPayload, type Payload } from 'payload';
 import config from '@payload-config';
 
-let cachedPayload: any = null;
+let cachedPayload: Payload | null = null;
 
 export async function getPayloadClient() {
   if (cachedPayload) {

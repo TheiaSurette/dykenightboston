@@ -3,12 +3,12 @@ import Link from 'next/link';
 import { Card, CardContent, CardFooter } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Calendar, MapPin } from 'lucide-react';
-import * as LucideIcons from 'lucide-react';
+import { icons } from 'lucide-react';
 
 interface EventLink {
   url: string;
   text: string;
-  icon?: string;
+  icon?: string | null;
 }
 
 interface EventCardProps {
@@ -38,9 +38,9 @@ export default function EventCard({
   eventLinks,
 }: EventCardProps) {
   // Helper function to get icon component from lucide-react
-  const getIcon = (iconName?: string) => {
-    if (!iconName) return null;
-    const IconComponent = (LucideIcons as any)[iconName];
+  const getIcon = (iconName?: string | null) => {
+    if (!iconName || !Object.hasOwn(icons, iconName)) return null;
+    const IconComponent = icons[iconName as keyof typeof icons];
     return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
   };
   // Format date and time in Eastern Time for Boston events

@@ -70,6 +70,7 @@ A Next.js 16 website for Dyke Night Boston, a community event organization.
 - `pnpm build` - Build for production
 - `pnpm start` - Start production server
 - `pnpm lint` - Run ESLint
+- `pnpm payload generate:types` - Regenerate the committed Payload types after changing collections or globals (requires database and Payload environment configuration)
 - `pnpm db:start` - Start local Supabase
 - `pnpm db:stop` - Stop local Supabase
 - `pnpm db:status` - Show Supabase status

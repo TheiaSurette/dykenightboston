@@ -1,10 +1,11 @@
+import { getEventLinks } from '@/lib/eventLinks';
 import { getPayloadClient } from '@/lib/payload';
 import { serializeRichText } from '@/lib/richText';
 import { unstable_cache } from 'next/cache';
 import Image from 'next/image';
 import { Calendar, MapPin } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import * as LucideIcons from 'lucide-react';
+import { icons } from 'lucide-react';
 import { notFound } from 'next/navigation';
 
 export const revalidate = 3600; // Revalidate every hour as fallback
@@ -110,22 +111,14 @@ export default async function EventDetailsPage({ params }: Props) {
   const locationText = locationParts.length > 0 ? locationParts.join(' | ') : 'Location TBD';
 
   // Helper function to get icon component from lucide-react
-  const getIcon = (iconName?: string) => {
-    if (!iconName) return null;
-    const IconComponent = (LucideIcons as any)[iconName];
+  const getIcon = (iconName?: string | null) => {
+    if (!iconName || !Object.hasOwn(icons, iconName)) return null;
+    const IconComponent = icons[iconName as keyof typeof icons];
     return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
   };
 
-  // Convert old eventLinkUrl/eventLinkText to new eventLinks format for backward compatibility
-  let eventLinks = event.eventLinks || [];
-  if (event.eventLinkUrl && !eventLinks.length) {
-    eventLinks = [
-      {
-        url: event.eventLinkUrl,
-        text: event.eventLinkText || 'Event Link',
-      },
-    ];
-  }
+  // Preserve legacy single-link events.
+  const eventLinks = getEventLinks(event);
 
   return (
     <main className="min-h-screen bg-transparent pt-16">
@@ -178,7 +171,7 @@ export default async function EventDetailsPage({ params }: Props) {
                 Event Links
               </h2>
               <div className="flex flex-wrap gap-4">
-                {eventLinks.map((link: any, index: number) => {
+                {eventLinks.map((link, index: number) => {
                   const iconElement = getIcon(link.icon);
                   return (
                     <Button

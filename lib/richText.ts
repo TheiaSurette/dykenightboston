@@ -27,7 +27,7 @@ export async function extractPlainText(lexicalData: SerializedEditorState): Prom
   try {
     const html = await serializeRichText(lexicalData);
     // Convert block-level elements to newlines before stripping tags
-    let plainText = html
+    const plainText = html
       .replace(/<br\s*\/?>/gi, '\n') // Convert <br> tags to newlines
       .replace(/<\/p>/gi, '\n') // Convert closing </p> tags to newlines
       .replace(/<\/div>/gi, '\n') // Convert closing </div> tags to newlines

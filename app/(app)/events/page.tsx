@@ -1,3 +1,4 @@
+import { getEventLinks } from '@/lib/eventLinks';
 import { getPayloadClient } from '@/lib/payload';
 import EventCard from '@/components/EventCard';
 import { unstable_cache } from 'next/cache';
@@ -26,11 +27,11 @@ export default async function EventsPage() {
 
   const now = new Date();
   const upcomingEvents = eventsData.docs
-    .filter((event: any) => new Date(event.date) >= now)
-    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .filter((event) => new Date(event.date) >= now)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
   const pastEvents = eventsData.docs
-    .filter((event: any) => new Date(event.date) < now)
-    .sort((a: any, b: any) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    .filter((event) => new Date(event.date) < now)
+    .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
   return (
     <main className="min-h-screen bg-transparent pt-16">
@@ -46,7 +47,7 @@ export default async function EventsPage() {
           {upcomingEvents && upcomingEvents.length > 0 ? (
             <div className="flex flex-wrap justify-center gap-8">
               {await Promise.all(
-                upcomingEvents.map(async (event: any) => {
+                upcomingEvents.map(async (event) => {
                   const descriptionText = event.description
                     ? await extractPlainText(event.description)
                     : '';
@@ -55,16 +56,8 @@ export default async function EventsPage() {
                       ? descriptionText.substring(0, 150).trim() + '...'
                       : descriptionText;
 
-                  // Convert old eventLinkUrl/eventLinkText to new eventLinks format for backward compatibility
-                  let eventLinks = event.eventLinks || [];
-                  if (event.eventLinkUrl && !eventLinks.length) {
-                    eventLinks = [
-                      {
-                        url: event.eventLinkUrl,
-                        text: event.eventLinkText || 'Event Link',
-                      },
-                    ];
-                  }
+                  // Preserve legacy single-link events.
+                  const eventLinks = getEventLinks(event);
 
                   return (
                     <div
@@ -120,7 +113,7 @@ export default async function EventsPage() {
             </div>
             <div className="flex flex-wrap justify-center gap-8">
               {await Promise.all(
-                pastEvents.map(async (event: any) => {
+                pastEvents.map(async (event) => {
                   const descriptionText = event.description
                     ? await extractPlainText(event.description)
                     : '';
@@ -129,16 +122,8 @@ export default async function EventsPage() {
                       ? descriptionText.substring(0, 150).trim() + '...'
                       : descriptionText;
 
-                  // Convert old eventLinkUrl/eventLinkText to new eventLinks format for backward compatibility
-                  let eventLinks = event.eventLinks || [];
-                  if (event.eventLinkUrl && !eventLinks.length) {
-                    eventLinks = [
-                      {
-                        url: event.eventLinkUrl,
-                        text: event.eventLinkText || 'Event Link',
-                      },
-                    ];
-                  }
+                  // Preserve legacy single-link events.
+                  const eventLinks = getEventLinks(event);
 
                   return (
                     <div

@@ -1,7 +1,7 @@
 import Link from 'next/link';
 import { getPayloadClient } from '@/lib/payload';
 import { unstable_cache } from 'next/cache';
-import * as LucideIcons from 'lucide-react';
+import { icons } from 'lucide-react';
 
 export default async function Footer() {
   const currentYear = new Date().getFullYear();
@@ -19,9 +19,9 @@ export default async function Footer() {
 
   const socialLinks = socialLinksData?.socialLinks || [];
 
-  const getIcon = (iconName?: string) => {
-    if (!iconName) return null;
-    const IconComponent = (LucideIcons as any)[iconName];
+  const getIcon = (iconName?: string | null) => {
+    if (!iconName || !Object.hasOwn(icons, iconName)) return null;
+    const IconComponent = icons[iconName as keyof typeof icons];
     return IconComponent ? <IconComponent className="w-4 h-4" /> : null;
   };
 
@@ -69,7 +69,7 @@ export default async function Footer() {
             </h3>
             {socialLinks.length > 0 && (
               <ul className="space-y-2">
-                {socialLinks.map((link: any, index: number) => {
+                {socialLinks.map((link, index: number) => {
                   const iconElement = getIcon(link.icon);
                   return (
                     <li key={index}>

@@ -1,3 +1,4 @@
+import { getEventLinks } from '@/lib/eventLinks';
 import { getPayloadClient } from '@/lib/payload';
 import EventCard from '@/components/EventCard';
 import NewsletterSignup from '@/components/NewsletterSignup';
@@ -68,7 +69,7 @@ export default async function Home() {
             <>
               <div className="flex flex-wrap justify-center gap-8 max-w-6xl mx-auto">
                 {await Promise.all(
-                  events.map(async (event: any) => {
+                  events.map(async (event) => {
                     const descriptionText = event.description
                       ? await extractPlainText(event.description)
                       : '';
@@ -77,16 +78,8 @@ export default async function Home() {
                         ? descriptionText.substring(0, 150).trim() + '...'
                         : descriptionText;
 
-                    // Convert old eventLinkUrl/eventLinkText to new eventLinks format for backward compatibility
-                    let eventLinks = event.eventLinks || [];
-                    if (event.eventLinkUrl && !eventLinks.length) {
-                      eventLinks = [
-                        {
-                          url: event.eventLinkUrl,
-                          text: event.eventLinkText || 'Event Link',
-                        },
-                      ];
-                    }
+                    // Preserve legacy single-link events.
+                    const eventLinks = getEventLinks(event);
 
                     return (
                       <div key={event.id} className="w-full max-w-md">

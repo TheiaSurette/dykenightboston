@@ -77,10 +77,10 @@ export async function POST(request: NextRequest) {
       { message: 'Successfully subscribed to our newsletter!' },
       { status: 201 }
     );
-  } catch (error: any) {
+  } catch (error) {
     console.error('Newsletter subscription error:', error);
     
-    if (error.statusCode === 429) {
+    if (typeof error === 'object' && error !== null && 'statusCode' in error && error.statusCode === 429) {
       return NextResponse.json(
         { error: 'Too many requests. Please try again in a moment.' },
         { status: 429 }
