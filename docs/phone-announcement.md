@@ -4,6 +4,8 @@ Admins and editors can open **Content → Phone announcement** in Payload and sa
 one plain-text message. Saving makes it live for the next caller. The message is
 required, cannot contain only whitespace, and is limited to 1,500 characters
 (approximately two minutes of speech). There is no separate publish step.
+Unsupported control characters are rejected with a field error; unreadable
+imported text uses the fallback below.
 
 An incoming call hears the saved message once in US English using Twilio's basic
 `woman` voice, then hangs up. Calls already playing a response finish that version.
