@@ -159,6 +159,13 @@
   animation: scroll-down 60s linear infinite;
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .barbed-wire-left,
+  .barbed-wire-right {
+    animation: none;
+  }
+}
+
 /* Payload Rich Text Styles */
 .payload-richtext {
   @apply text-white/90 leading-relaxed;

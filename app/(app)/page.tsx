@@ -139,6 +139,22 @@ export default async function Home() {
           )}
         </div>
       </section>
+      <section aria-labelledby="get-involved-heading" className="px-16 md:px-28 py-10 mb-8 text-center">
+        <div className="mx-auto max-w-xl border-t border-white/20 pt-8">
+          <h2 id="get-involved-heading" className="text-3xl md:text-4xl font-bold text-white mb-4 [text-shadow:2px_2px_8px_rgb(0_0_0/60%)]">
+            Get <span className="text-red">Involved</span>
+          </h2>
+          <p className="text-lg text-white/90 mb-6 [text-shadow:2px_2px_4px_rgb(0_0_0/60%)]">
+            Want to volunteer to work at a future Dyke Night? We can always use the help!
+          </p>
+          <Link
+            href="/volunteer"
+            className="inline-flex min-h-11 items-center justify-center rounded-sm bg-red px-7 py-3 text-lg text-white transition-colors hover:bg-red/80 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-white"
+          >
+            Volunteer
+          </Link>
+        </div>
+      </section>
     </main>
   );
 }

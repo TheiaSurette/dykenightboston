@@ -15,7 +15,7 @@
     "db:stop": "supabase stop",
     "db:status": "supabase status",
     "db:reset": "supabase db reset",
-    "test": "node --import tsx --test tests/phone-announcement.test.mjs"
+    "test": "node --import tsx --test tests/*.test.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",
@@ -30,6 +30,7 @@
     "@radix-ui/react-slot": "^1.2.3",
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
+    "google-auth-library": "^11.3.4",
     "graphql": "^16.11.0",
     "lucide-react": "^0.546.0",
     "next": "^15.4.11",

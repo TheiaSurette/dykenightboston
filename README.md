@@ -134,3 +134,9 @@ All rights reserved.
 The Twilio incoming-call webhook reads a shared announcement managed by admins
 and editors in Payload. See [Phone announcement setup and verification](docs/phone-announcement.md)
 for environment settings, migration, automated checks, and later number hookup.
+
+## Volunteer interest
+
+The `/volunteer` page collects interest in future events and saves responses to a
+private Google spreadsheet. See [volunteer intake setup](docs/volunteer-intake.md)
+for server environment variables, the response template, and delivery recovery.

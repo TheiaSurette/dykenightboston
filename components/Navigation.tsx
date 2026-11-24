@@ -39,6 +39,7 @@ export default function Navigation({ alwaysScrolled = false }: NavigationProps) 
     { href: '/', label: 'Home' },
     { href: '/about', label: 'About' },
     { href: '/events', label: 'Events' },
+    { href: '/volunteer', label: 'Volunteer' },
   ];
 
   const isActive = (href: string) => {

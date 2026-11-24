@@ -36,6 +36,11 @@ export default async function Footer() {
             </h3>
             <ul className="space-y-2">
               <li>
+                <Link href="/volunteer" className="text-white/90 hover:text-red transition-colors">
+                  Volunteer
+                </Link>
+              </li>
+              <li>
                 <Link
                   href="/"
                   className="text-white/90 hover:text-red transition-colors [text-shadow:2px_2px_4px_rgb(0_0_0/60%)]"
