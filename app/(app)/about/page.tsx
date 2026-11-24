@@ -1,7 +1,7 @@
 import { getPayloadClient } from '@/lib/payload';
 import { serializeRichText } from '@/lib/richText';
 import { unstable_cache } from 'next/cache';
-import Image from 'next/image';
+import FlaggingChart from '@/components/FlaggingChart';
 
 export const revalidate = 3600; // Revalidate every hour as fallback
 
@@ -98,15 +98,7 @@ export default async function AboutPage() {
                     dangerouslySetInnerHTML={{ __html: flaggingContent }}
                   />
                 )}
-                {flaggingSection.image && typeof flaggingSection.image === 'object' && (
-                  <Image
-                    src={flaggingSection.image.url || '/img/flagging.png'}
-                    alt={flaggingSection.image.alt || 'flagging chart'}
-                    width={500}
-                    height={500}
-                    className="w-full h-auto max-w-xl mx-auto mt-6"
-                  />
-                )}
+                <FlaggingChart />
               </div>
             )}
           </div>
